@@ -4,8 +4,8 @@ from utils import batch_shuffle
 from mnist_load import load_data
 
 weight_size = 3
-weight_channels = 28
-no_cnn_layers = 50
+weight_channels = 128
+no_cnn_layers = 10
 
 fc_dims = [100, 20, 10]
 
