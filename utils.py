@@ -1,4 +1,6 @@
 import numpy as np
+import matplotlib.pyplot as plt
+import math
 
 def batch_shuffle(X, Y, batch_size, seed):
 
@@ -51,3 +53,23 @@ def batch_shuffle_nn(X, Y, batch_size, seed):
 
     return mini_batches
 
+def plot_images(images, true_class, pred_class):
+    
+    fig, axes = plt.subplots(1,1)
+    fig.subplots_adjust(hspace = 0.1, wspace = 0.1)
+    img_shape = [28,28]
+
+    for i, ax in enumerate(axes.flat):
+        ax.imshow(images[i].reshape(img_shape), cmap = 'binary')
+
+        if pred_class is None:
+            xlabel = "True: {0}".format(true_class[i])
+        else:
+            xlabel = "True: {0}, Pred: {0}".format(true_class[i], pred_class[i])
+
+        ax.set_xlabel(xlabel)
+
+        ax.set_xticks([])
+        ax.set_yticks([])
+
+    plt.show()

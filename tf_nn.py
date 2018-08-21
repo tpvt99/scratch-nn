@@ -3,10 +3,10 @@ import numpy as np
 from utils import batch_shuffle_nn
 from mnist_load import load_data
 
-layers_dims = [784, 500, 200, 100,50, 20, 10] # include the input layers and output layers
+layers_dims = [784, 500, 200, 100, 50, 20, 10] # include the input layers and output layers
 
-learning_rate = 0.01
-epoches = 200
+learning_rate = 0.001
+epoches = 100
 batch_size = 1000
 
 # X has [m, dimension], m is the total number of examples
@@ -21,7 +21,6 @@ def parameters_initializer(layers_dimension):
     for i in range(len(layers_dimension)-1):
         parameters["W" + str(i+1)] = tf.get_variable("W" + str(i+1), initializer = tf.contrib.layers.xavier_initializer(), shape = [layers_dimension[i+1], layers_dimension[i]])
         parameters["b" + str(i+1)] = tf.get_variable("b" + str(i+1), initializer = tf.initializers.zeros(), shape = [layers_dimension[i+1]])
-
     return parameters
 
 def forward_propagation(X, parameters):
@@ -41,32 +40,11 @@ def forward_propagation(X, parameters):
 
 # could customize the cost function
 def compute_cost(A, Y):
-    cost = -tf.reduce_mean(tf.multiply(Y, tf.log(A + 1e-4)) + tf.multiply((1-Y), tf.log(1-A+1e-4)))
+    #cost = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits_v2(labels = Y, logits = A))
 
+    cost = -tf.reduce_mean(tf.multiply(Y, tf.log(A + 1e-4)) + tf.multiply((1-Y), tf.log(1-A+1e-4)))
     return cost
 
-def find_gradients(cost, parameters):
-    gradients = {}
-    number_layers = len(parameters)//2
-
-    for i in range(number_layers):
-        dW, db = tf.gradients(xs = [parameters["W" + str(i+1)], parameters["b" + str(i+1)]], ys = cost)
-        gradients["dW" + str(i+1)] = dW
-        gradients["db" + str(i+1)] = db
-
-    return gradients
-
-def update_gradients(parameters, gradients, learning_rate):
-    update_grads = []
-    number_layers = len(parameters)//2
-    print(gradients)
-    for i in range(number_layers):
-        u1 = parameters["W" + str(i+1)].assign(parameters["W" + str(i+1)] - learning_rate * gradients["dW" + str(i+1)])
-        u2 = parameters["b" + str(i+1)].assign(parameters["b" + str(i+1)] - learning_rate * gradients["db" + str(i+1)])
-        update_grads.extend([u1,u2])
-
-    return tf.group(*update_grads)
-    
 
 def model(X_train, Y_train, X_test, Y_test, layer_dimensions, learning_rate = 1e-3, epoches = 100, batch_size = 10):
     m = X_train.shape[0]
@@ -77,9 +55,8 @@ def model(X_train, Y_train, X_test, Y_test, layer_dimensions, learning_rate = 1e
 
     A = forward_propagation(X, parameters)
     cost = compute_cost(A, Y)
-
-    gradients = find_gradients(cost, parameters)
-    update_grads = update_gradients(parameters, gradients, learning_rate)
+    
+    optimizer = tf.train.GradientDescentOptimizer(learning_rate = learning_rate).minimize(cost)
 
     y_pred_class = tf.argmax(A, axis = 1)
     y_true_class = tf.argmax(Y, axis = 1)
@@ -100,7 +77,7 @@ def model(X_train, Y_train, X_test, Y_test, layer_dimensions, learning_rate = 1e
             for mini_batch in mini_batches:
                 X_batch, Y_batch = mini_batch
 
-                costx,_ = sess.run([cost, update_grads], feed_dict = {X: X_batch, Y : Y_batch})
+                costx,_ = sess.run([cost, optimizer], feed_dict = {X: X_batch, Y : Y_batch})
 
                 batch_cost += costx / total_batch
 
