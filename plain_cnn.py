@@ -4,13 +4,13 @@ from utils import batch_shuffle
 from mnist_load import load_data
 
 weight_size = 3
-weight_channels = 125
-no_cnn_layers = 10
+weight_channels = 28
+no_cnn_layers = 50
 
 fc_dims = [100, 20, 10]
 
-epoches = 10
-learning_rate = 0.01
+epoches = 100
+learning_rate = 0.001
 batch_size = 100
 
 def placeholder_initializer(w, h, c, out_c):
