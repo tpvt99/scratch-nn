@@ -59,7 +59,6 @@ def find_gradients(cost, parameters):
 def update_gradients(parameters, gradients, learning_rate):
     update_grads = []
     number_layers = len(parameters)//2
-    print(gradients)
     for i in range(number_layers):
         u1 = parameters["W" + str(i+1)].assign(parameters["W" + str(i+1)] - learning_rate * gradients["dW" + str(i+1)])
         u2 = parameters["b" + str(i+1)].assign(parameters["b" + str(i+1)] - learning_rate * gradients["db" + str(i+1)])
