@@ -32,7 +32,7 @@ def CNN_layer(no_layer, X, weight_size, weight_channel):
 
     Z = tf.nn.conv2d(X, W, strides = [1,1,1,1], padding = "SAME")
     A = tf.nn.relu(Z)
-    A = tf.max_pool(A, ksize = [1, 2, 2, 1], strides = [1, 2, 2, 1,], padding = "SAME")
+    A = tf.nn.max_pool(A, ksize = [1, 2, 2, 1], strides = [1, 2, 2, 1,], padding = "SAME")
 
     return A, W
 
