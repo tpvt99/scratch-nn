@@ -10,8 +10,8 @@ no_cnn_layers = 50
 fc_dims = [100, 20, 10]
 
 epoches = 100
-learning_rate = 0.001
-batch_size = 100
+learning_rate = 0.01
+batch_size = 1000
 
 def placeholder_initializer(w, h, c, out_c):
     X = tf.placeholder(tf.float32, shape = [None, h, w, c], name="X")
